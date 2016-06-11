@@ -9,18 +9,44 @@ class CoreRiderService(object):
 
     def get_riders(self,scheduled_time):
         scheduled_time=datetime.strptime(scheduled_time,"%Y-%m-%d %H:%M:%S")
-        time=scheduled_time.strftime('%m/ %d/%Y  %H:%M').lstrip("0").replace(" 0", "")
-
         uniqueriderid=[]
         response=[]
-        for rider in self.db.rider_location.find({"update_timestamp" : time }):
+        for rider in self.db.rider_location.find({"create_timestamp" : { "$gte": str(scheduled_time) } } ):
             if rider['rider_id'] not in uniqueriderid:
                 uniqueriderid.append(rider['rider_id'])
                 response.append(rider)
         return response
+
+    def get_riders(self,scheduled_time,cluster_id):
+        scheduled_time=datetime.strptime(scheduled_time,"%Y-%m-%d %H:%M:%S")
+        uniqueriderid=[]
+        response=[]
+        ridersInthisclusters=self.db.rider_data.distinct("rider_id",{"clusters":cluster_id})
+        
+        for rider in self.db.rider_location.find({"$and":[{"rider_id":{"$in":ridersInthisclusters}},{"create_timestamp" : { "$gte": str(scheduled_time) } }] }):
+            if rider['rider_id'] not in uniqueriderid:
+                uniqueriderid.append(rider['rider_id'])
+                response.append(rider)
+        return response
+
+    def populate_riders(self):
+        for distinctriderid in self.db.rider_location.distinct("rider_id"):
+            rider={}
+            rider["rider_id"]=distinctriderid
+            rider["clusters"]=self.db.order_data.distinct("cluster_id",{"rider_id":distinctriderid})
+            self.db.rider_data.insert(rider)
+
+    def compute_riderlocation(self):
+        for rider_location in self.db.rider_location.find():
+            self.db.rider_location.save(rider_location)
+            
+            
     
 if __name__ == "__main__":
+##    riderservice=CoreRiderService()
+##    for rider in riderservice.get_riders("2016-04-08 08:24:05"):
+##        print (rider)
     riderservice=CoreRiderService()
-    for rider in riderservice.get_riders("2016-04-03 05:01:45"):
-        print (rider)
+    riderservice.populate_riders()
+    print("done")
     
