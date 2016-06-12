@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from pymongo import MongoClient
 
 class CoreRiderService(object):
@@ -7,26 +7,23 @@ class CoreRiderService(object):
         client = MongoClient('localhost:27017')
         self.db = client.shadowfax
 
-    def get_riders(self,scheduled_time):
+    def get_riders(self,scheduled_time,cluster_id=None):
         scheduled_time=datetime.strptime(scheduled_time,"%Y-%m-%d %H:%M:%S")
         uniqueriderid=[]
         response=[]
-        for rider in self.db.rider_location.find({"create_timestamp" : { "$gte": str(scheduled_time) } } ):
-            if rider['rider_id'] not in uniqueriderid:
-                uniqueriderid.append(rider['rider_id'])
-                response.append(rider)
-        return response
-
-    def get_riders(self,scheduled_time,cluster_id):
-        scheduled_time=datetime.strptime(scheduled_time,"%Y-%m-%d %H:%M:%S")
-        uniqueriderid=[]
-        response=[]
-        ridersInthisclusters=self.db.rider_data.distinct("rider_id",{"clusters":cluster_id})
-        
-        for rider in self.db.rider_location.find({"$and":[{"rider_id":{"$in":ridersInthisclusters}},{"create_timestamp" : { "$gte": str(scheduled_time) } }] }):
-            if rider['rider_id'] not in uniqueriderid:
-                uniqueriderid.append(rider['rider_id'])
-                response.append(rider)
+        lowerlimit=scheduled_time - timedelta(seconds=240)
+        upperlimit=scheduled_time - timedelta(seconds=60)
+        if cluster_id is not None:
+            ridersInthisclusters=self.db.rider_data.distinct("rider_id",{"clusters":cluster_id})
+            for rider in self.db.rider_location.find({"$and":[{"rider_id":{"$in":ridersInthisclusters}},{"create_timestamp" : {"$gte":str(lowerlimit),"$lte":str(upperlimit)}}] }):
+                if rider['rider_id'] not in uniqueriderid:
+                    uniqueriderid.append(rider['rider_id'])
+                    response.append(rider)
+        else:
+            for rider in self.db.rider_location.find({"create_timestamp" : {"$gte":str(lowerlimit),"$lte":str(upperlimit)}}):
+                if rider['rider_id'] not in uniqueriderid:
+                    uniqueriderid.append(rider['rider_id'])
+                    response.append(rider)            
         return response
 
     def populate_riders(self):
@@ -43,10 +40,10 @@ class CoreRiderService(object):
             
     
 if __name__ == "__main__":
-##    riderservice=CoreRiderService()
-##    for rider in riderservice.get_riders("2016-04-08 08:24:05"):
-##        print (rider)
     riderservice=CoreRiderService()
-    riderservice.populate_riders()
-    print("done")
+    for rider in riderservice.get_riders("2016-04-08 08:24:05"):
+        print (rider)
+##    riderservice=CoreRiderService()
+##    riderservice.populate_riders()
+##    print("done")
     

@@ -4,12 +4,12 @@ import requests
 class CoreGeoLocationService(object):
 
     def __init__(self):
-        self.APIKEY = 'key=AIzaSyD-YMs3upLuvzOz1mQ9cODJ-5wTwQ6eVMo'
-        #self.APIKEY = 'key=AIzaSyDfRyh6-mdWnX1o-QChBfk5-t04u44bkPw' 
+        self.APIKEY = 'key=YourAPIKEY'
 
     def get_distancematrix(self,source_latitude,source_longitude,destination_latitude,destination_longitude):
         origins='origins='+str(source_latitude)+','+str(source_longitude)
         destinations='destinations='+str(destination_latitude)+','+str(destination_longitude)
+        departure_time='departure_time'
         url= 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&'+origins+'&'+destinations+'&'+self.APIKEY 
         apiResponse = requests.get(url).json()
         #print(apiResponse)
