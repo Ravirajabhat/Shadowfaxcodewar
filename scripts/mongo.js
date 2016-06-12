@@ -41,7 +41,7 @@ db.order_data.find().forEach(function(obj){
 });
 
 
-mongoexport --db shadowfax --collection order_data --query '{"delivered_time":{$ne:null}}' --csv --fields order_id,rider_id,actual_time,predicted_rider_id_within_cluster,predicted_time_within_cluster,predicted_time_accross_cluster,predicted_rider_id_accross_cluster --out /home/rohit/Desktop/venturesity/predicted_order_data.csv;
+mongoexport --db shadowfax --collection order_data --query '{"delivered_time":{$ne:null}}' --csv --fields order_id,rider_id,actual_time,predicted_rider_id_within_cluster,predicted_time_within_cluster,predicted_time_accross_cluster,predicted_rider_id_accross_cluster --out /home/rbhat/Documents/Raviraj/Hackethon/Shadowfax/Shadowfaxcodewar/scripts/predicted_order_data.csv;
 
 
 
