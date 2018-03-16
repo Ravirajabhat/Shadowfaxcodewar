@@ -1,0 +1,2 @@
+word="Bharat"
+print 'shadowfax'.join(char for char in word if char.lower() not in 'aeiou')
