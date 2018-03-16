@@ -1,10 +1,10 @@
-# Shadowfaxcodewar
+ # Shadowfaxcodewar
 
 Following are the Problem Statements in Shadowfaxcodewar(http://blog.venturesity.com/shahowfax-code-wars-hack-diary) organized by Venturesity (https://skillenza.com/)
 
 # Problem Statement
 
-## Lots of Locations (LOL)
+## Lots of Locations (LOL) - Solved 
 Real-time locations of our delivery executives is a key to manage and optimise most of our products & services. As the location data comes in, it helps in order allocation, route management and many more things. Although we have thought of lots of ways to use them, we have not thought of all of them.
 We invite innovative numbers and patterns that can be found from them. How can we use such data to improve logistical solutions to make deliveries faster and help utilise our capacity to the full?
 The participants will be given a dump of our delivery executives' real-time location as a file from one of our peak hour periods and some orders that came along in that period. We expect to be shown that data like it has never been shown before.
