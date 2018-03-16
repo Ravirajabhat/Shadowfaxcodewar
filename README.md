@@ -1,3 +1,3 @@
 # Shadowfaxcodewar
 
-https://github.com/Ravirajabhat/Shadowfaxcodewar.wiki.git
+https://github.com/Ravirajabhat/Shadowfaxcodewar/wiki
